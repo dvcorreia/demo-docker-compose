@@ -5,10 +5,10 @@ This demonstrates how to wire up gatekeeper with keycloak.
 ## Quickstart
 
 ```
-docker-compose up -d
+docker compose up -d
 ```
 
-Watch the logs with `docker-compose logs -f`.
+Watch the logs with `docker compose logs -f`.
 
 After everything has started, point your browser to
 
