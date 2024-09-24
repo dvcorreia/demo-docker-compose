@@ -1,14 +1,12 @@
-version: "3.8"
-
 services:
   caddy:
-    image: caddy:2.1.1-alpine
+    image: caddy:2.8.4-alpine
     ports:
       - 80:80
       - 443:443
     volumes:
-    # Mount Caddyfile into the container for caddy to use
-    - ./config/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      # Mount Caddyfile into the container for caddy to use
+      - ./config/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
     networks:
       default:
         # Define aliases so that inside the docker network, these services can
@@ -21,24 +19,21 @@ services:
           - whoami.localhost
 
   keycloak:
-    image: jboss/keycloak:latest
+    image: quay.io/keycloak/keycloak:25.0.6
     volumes:
-    - ./config/keycloak/:/keycloak/:ro
+      - ./config/keycloak/:/keycloak/:ro
     depends_on:
       - caddy
     environment:
       # Use the inbuilt h2 database for demo purposes
-      DB_VENDOR: h2
+      KC_DB: dev-mem
       # Credentials for demo
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: password
-      # Set PROXY_ADDRESS_FORWARDING so that Keycloak knows it is behind a proxy
-      PROXY_ADDRESS_FORWARDING: "true"
-      KEYCLOAK_HOME: /opt/jboss/keycloak
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: password
     entrypoint: /keycloak/start.sh
 
   gatekeeper:
-    image: quay.io/gogatekeeper/gatekeeper:1.1.0
+    image: quay.io/gogatekeeper/gatekeeper:2.14.3
     volumes:
       - ./config/gatekeeper/:/gatekeeper/:ro
     entrypoint: /gatekeeper/start.sh
